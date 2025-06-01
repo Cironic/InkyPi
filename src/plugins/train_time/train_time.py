@@ -31,7 +31,7 @@ class Train(BasePlugin):
         if device_config.get_config("orientation") == "vertical":
             dimensions = dimensions[::-1]
 
-        image = self.render_image(dimensions, "train_time.html", "train_time.css", departures)
+        image = self.render_image(dimensions, html_file="train_time.html", template_params={"departures": departures})
         if not image:
             raise RuntimeError("Failed to take screenshot, please check logs.")
         return image
