@@ -1,4 +1,3 @@
-import json
 from plugins.base_plugin.base_plugin import BasePlugin
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -23,11 +22,10 @@ class Train(BasePlugin):
         
         try: 
             departures=self.get_departures(api_key, db_client_id)
-            parsed_departures=self.parse_departures(departures)
 
         except Exception as e:
-            logger.error(f"Failed to make OpenWeatherMap request: {str(e)}")
-            raise RuntimeError("OpenWeatherMap request failure, please check logs.")
+            logger.error(f"Failed to Request DB API: {str(e)}")
+            raise RuntimeError("DB API request failure, please check logs.")
 
         dimensions = device_config.get_resolution()
         if device_config.get_config("orientation") == "vertical":
