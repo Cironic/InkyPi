@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Abfahrtszeiten</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        font-size: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 6px;
+        text-align: left;
+      }
+      tr:nth-child(even) {
+        background: #f0f0f0;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Abfahrten ab Dresden-Trachau</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Zug</th>
+          <th>Abfahrt</th>
+          <th>Gleis</th>
+          <th>Ziel</th>
+          <th>Verspätung</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for dep in departures %}
+        <tr>
+          <td>{{ dep.zug }}</td>
+          <td>{{ dep.abfahrt }}</td>
+          <td>{{ dep.gleis }}</td>
+          <td>{{ dep.ziel }}</td>
+          <td>{{ dep.verspaetung }} min</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
