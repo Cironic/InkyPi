@@ -81,4 +81,6 @@ class Train(BasePlugin):
                 'ziel': ziel,
                 'verspaetung': 0  # Kein Delay in XML enthalten
             })
-        return departures
+
+            departures_sorted=sorted(departures, key=lambda x: datetime.strptime(x['abfahrt'], '%H:%M'))
+        return departures_sorted
