@@ -4,11 +4,13 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import requests
 import logging
+import re 
 
 logger = logging.getLogger(__name__)
 
-class Train(BasePlugin):
+VVO_URL='https://webapi.vvo-online.de/dm'
 
+class VvoDepartures():
     def generate_image(self, settings, device_config):
         api_key = 'e66ed4c930cffd68921f09b9d16496ff'
         if not api_key:
