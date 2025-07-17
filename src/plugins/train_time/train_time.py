@@ -10,77 +10,38 @@ logger = logging.getLogger(__name__)
 class Train(BasePlugin):
 
     def generate_image(self, settings, device_config):
-          
-        
-        api_key = device_config.load_env_key("DB_CLIENT_SECRET")
+        api_key = 'e66ed4c930cffd68921f09b9d16496ff'
         if not api_key:
             raise RuntimeError("DB API Key not configured.")
         
-        db_client_id = device_config.load_env_key("DB_CLIENT_ID")
-        if not db_client_id:
-            raise RuntimeError("DB Client ID not configured.")
-        
-        try: 
-            departures=self.get_departures(api_key, db_client_id)
-
-        except Exception as e:
-            logger.error(f"Failed to Request DB API: {str(e)}")
-            raise RuntimeError("DB API request failure, please check logs.")
-
-        dimensions = device_config.get_resolution()
-        if device_config.get_config("orientation") == "vertical":
-            dimensions = dimensions[::-1]
-
-        image = self.render_image(dimensions, html_file="train_time.html", template_params={"departures": departures})
-        if not image:
-            raise RuntimeError("Failed to take screenshot, please check logs.")
-        return image
-
+    @staticmethod
+    def parse_date(date_str):
+        timestamp = int(re.search(r'\d+', date_str).group(0)) / 1000
+        return datetime.fromtimestamp(timestamp)
     
-    def get_departures(self, api_key, db_client_id):
-        DB_URL='https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/plan/{evaNo}/{today}/{hour}'
-        headers = {
-            'DB-Client-Id': db_client_id,
-            'DB-Api-Key': api_key,
-            'accept': 'application/xml'
-            }
-        evaNo = '08011427'
-        today = datetime.today().strftime("%y%m%d")
-        hour = datetime.now(ZoneInfo("Europe/Berlin")).strftime("%H")
-        
-        response = requests.get(DB_URL.format(evaNo=evaNo, today=today, hour=hour), headers=headers)
-        parsed_departures = self.parse_departures(response.content)
+    def get_departures(self):
+        VVO_URL='https://webapi.vvo-online.de/dm'
+        stopId=33000622
+        time=datetime.now().isoformat()
+        response = requests.post(VVO_URL,json={'stopId':stopId, 'time':time, "Mot":"SuburbanRailway"})
+        parsed_departures = self.parse_departures(response.json())
         return parsed_departures
     
-    def parse_departures(self, xml_bytes):
-        xml_string = xml_bytes.decode("utf-8")
-        root = ET.fromstring(xml_string)
+    def parse_departures(self, response):
         departures = []
-
-        for s in root.findall('s'):
-            dp = s.find('dp')
-            tl = s.find('tl')
-            if dp is None or tl is None:
-                continue
-
-            # Zeitstempel in lesbares Format umwandeln (YYMMDDHHMM → datetime)
-            pt = dp.attrib.get('pt')
-            if not pt or len(pt) != 10:
-                continue
-            dt = datetime.strptime(pt, "%y%m%d%H%M")
-
-            zugnummer = f"{tl.attrib.get('c', '')}{tl.attrib.get('n', '')}"
-            gleis = dp.attrib.get('pp', '?')
-            ppth = dp.attrib.get('ppth', '')
-            ziel = ppth.split('|')[-1] if ppth else 'Unbekannt'
+        for dep in response['Departures']:
+            scheduled = self.parse_date(dep['ScheduledTime'])
+            real = self.parse_date(dep['RealTime'])
+            delay = int((real - scheduled).total_seconds() / 60)
 
             departures.append({
-                'zug': zugnummer,
-                'abfahrt': dt.strftime('%H:%M'),
-                'gleis': gleis,
-                'ziel': ziel,
-                'verspaetung': 0  # Kein Delay in XML enthalten
+                'zug': dep['LineName'],
+                'abfahrt': real.strftime('%H:%M'),
+                'gleis': dep['Platform']['Name'],
+                'ziel': dep['Direction'],
+                'verspaetung': delay
             })
+        return departures
 
-            departures_sorted=sorted(departures, key=lambda x: datetime.strptime(x['abfahrt'], '%H:%M'))
-        return departures_sorted
+
+    
