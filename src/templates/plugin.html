@@ -172,8 +172,17 @@
                 return;
             }
             if (loadPluginSettings) {
-                if (pluginSettings.margin) {
-                    document.getElementById('margin').value = pluginSettings.margin;
+                if (pluginSettings.topMargin) {
+                    document.getElementById('topMargin').value = pluginSettings.topMargin;
+                }
+                if (pluginSettings.bottomMargin) {
+                    document.getElementById('bottomMargin').value = pluginSettings.bottomMargin;
+                }
+                if (pluginSettings.leftMargin) {
+                    document.getElementById('leftMargin').value = pluginSettings.leftMargin;
+                }
+                if (pluginSettings.rightMargin) {
+                    document.getElementById('rightMargin').value = pluginSettings.rightMargin;
                 }
                 // Populate background options (color or image)
                 if (pluginSettings.backgroundOption) {
@@ -276,9 +285,24 @@
                                 <input type="hidden" id="selected-frame" name="selectedFrame" value="{{ frame_styles[0].Name }}" />
                             </div>
 
-                            <div class="form-group nowrap">
-                                <label for="margin" class="form-label">Margin:</label>
-                                <input type="number" class="form-input" id="margin" name="margin" min="0" max="40" step="5">px
+                            <div class="form-group">
+                                <label for="margin" class="form-label">Margins:</label>
+                                <div class="form-group nowrap">
+                                    <label for="topMargin" class="form-label">Top</label>
+                                    <input type="number" class="form-input" id="topMargin" name="topMargin" min="0" max="100" step="5">px
+                                </div>
+                                <div class="form-group nowrap">
+                                    <label for="bottomMargin" class="form-label">Bottom</label>
+                                    <input type="number" class="form-input" id="bottomMargin" name="bottomMargin" min="0" max="100" step="5">px
+                                </div>
+                                <div class="form-group nowrap">
+                                    <label for="leftMargin" class="form-label">Left</label>
+                                    <input type="number" class="form-input" id="leftMargin" name="leftMargin" min="0" max="100" step="5">px
+                                </div>
+                                <div class="form-group nowrap">
+                                    <label for="rightMargin" class="form-label":>Right</label>
+                                    <input type="number" class="form-input" id="rightMargin" name="rightMargin" min="0" max="100" step="5">px
+                                </div>
                             </div>
                         </div>    
                         
@@ -301,7 +325,7 @@
                                 <input type="file" clear-on-submit id="imageUpload" name="backgroundImageFile" accept="image/*" class="file-upload-input" onchange="showFileName()">
                                 <div id="fileName" class="file-name" style="display: none;">
                                     <span id="fileNameText"></span>
-                                    <button type="button" id="removeFileButton" class="remove-file-btn" onclick="removeFile()">X</button>
+                                    <button type="button" id="removeFileButton" class="remove-btn" onclick="removeFile()">X</button>
                                 </div>
                             </div>
                         </div>

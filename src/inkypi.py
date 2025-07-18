@@ -19,7 +19,7 @@ from utils.app_utils import generate_startup_image
 from flask import Flask, request
 from werkzeug.serving import is_running_from_reloader
 from config import Config
-from display_manager import DisplayManager
+from display.display_manager import DisplayManager
 from refresh_task import RefreshTask
 from blueprints.main import main_bp
 from blueprints.settings import settings_bp
@@ -49,6 +49,9 @@ load_plugins(device_config.get_plugins())
 app.config['DEVICE_CONFIG'] = device_config
 app.config['DISPLAY_MANAGER'] = display_manager
 app.config['REFRESH_TASK'] = refresh_task
+
+# Set additional parameters
+app.config['MAX_FORM_PARTS'] = 10_000
 
 # Register Blueprints
 app.register_blueprint(main_bp)
