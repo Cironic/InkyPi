@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify, current_app, render_template
 from utils.time_utils import calculate_seconds
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import logging
-from utils.app_utils import resolve_path, handle_request_files
+from utils.app_utils import resolve_path, handle_request_files, parse_form
 
 
 logger = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ def add_plugin():
     playlist_manager = device_config.get_playlist_manager()
 
     try:
-        plugin_settings = request.form.to_dict()
+        plugin_settings = parse_form(request.form)
         refresh_settings = json.loads(plugin_settings.pop("refresh_settings"))
         plugin_id = plugin_settings.pop("plugin_id")
 
@@ -186,7 +186,7 @@ def format_relative_time(iso_date_string):
         return f"{int(diff_minutes)} minutes ago"
     elif dt.date() == now.date():
         return "today at " + dt.strftime(time_format).lstrip("0")
-    elif dt.date() == (now.date().replace(day=now.day - 1)):
+    elif dt.date() == (now.date() - timedelta(days=1)):
         return "yesterday at " + dt.strftime(time_format).lstrip("0")
     else:
         return dt.strftime(month_day_format).replace(" 0", " ")  # Removes leading zero in day
