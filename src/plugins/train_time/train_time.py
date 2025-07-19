@@ -1,7 +1,5 @@
 from plugins.base_plugin.base_plugin import BasePlugin
-import xml.etree.ElementTree as ET
 from datetime import datetime
-from zoneinfo import ZoneInfo
 import requests
 import logging
 import re 
@@ -15,6 +13,26 @@ class Train(BasePlugin):
         api_key = 'e66ed4c930cffd68921f09b9d16496ff'
         if not api_key:
             raise RuntimeError("DB API Key not configured.")
+        
+        try:
+            departures = self.get_departures()
+        except Exception as e:
+            logger.error(f"Failed to request VVO API: {str(e)}")
+            raise RuntimeError("VVO API request failure, please check logs.")
+
+        dimensions = device_config.get_resolution()
+        if device_config.get_config("orientation") == "vertical":
+            dimensions = dimensions[::-1]
+
+        image = self.render_image(
+            dimensions,
+            html_file="train_time.html",
+            template_params={"departures": departures}
+        )
+
+        if not image:
+            raise RuntimeError("Failed to take screenshot, please check logs.")
+        return image
         
     @staticmethod
     def parse_date(date_str):
@@ -43,6 +61,7 @@ class Train(BasePlugin):
                 'ziel': dep['Direction'],
                 'verspaetung': delay
             })
+            departures.sort(key=lambda x: datetime.strptime(x['abfahrt'], '%H:%M'))
         return departures
 
 
