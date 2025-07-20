@@ -1,4 +1,4 @@
-<html>
+<!-- html>
   <head>
     <meta charset="UTF-8" />
     <title>Abfahrtszeiten</title>
@@ -46,4 +46,96 @@
       </tbody>
     </table>
   </body>
+</html-->
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+
+    h2 {
+      margin: 0;
+      display: inline-block;
+    }
+
+    .timestamp {
+      float: right;
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:nth-child(odd) {
+      background-color: #ffffff;
+    }
+
+    td.verspaetung {
+      color: red;
+      font-weight: bold;
+    }
+
+    td.inTime {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h2>Abfahrten ab Dresden-Trachau</h2>
+    <div class="timestamp">
+      Stand: {{ now.strftime('%d.%m.%Y %H:%M:%S') }}
+    </div>
+  </div>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Zug</th>
+        <th>Planmäßig</th>
+        <th>Abfahrt</th>
+        <th>Gleis</th>
+        <th>Ziel</th>
+        <th>Verspätung</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dep in departures[:4] %}
+      <tr>
+        <td>{{ dep.zug }}</td>
+        <td>{{ dep.plan }}</td>
+        <td>{{ dep.abfahrt }}</td>
+        <td>{{ dep.gleis }}</td>
+        <td>{{ dep.ziel }}</td>
+        <td class="{{ 'verspaetung' if dep.verspaetung > 0 else 'inTime' }}">
+          {{ dep.verspaetung }} min
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
 </html>

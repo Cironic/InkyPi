@@ -27,7 +27,10 @@ class Train(BasePlugin):
         image = self.render_image(
             dimensions,
             html_file="train_time.html",
-            template_params={"departures": departures}
+            template_params={
+                "departures": departures,
+                "now": datetime.now()
+            }
         )
 
         if not image:
@@ -56,6 +59,7 @@ class Train(BasePlugin):
 
             departures.append({
                 'zug': dep['LineName'],
+                'plan': scheduled.strftime('%H:%M'),  # NEU
                 'abfahrt': real.strftime('%H:%M'),
                 'gleis': dep['Platform']['Name'],
                 'ziel': dep['Direction'],
