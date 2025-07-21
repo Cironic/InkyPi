@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 VVO_URL='https://webapi.vvo-online.de/dm'
 
-weather_plugin = Weather()
+weather_plugin = Weather(BasePlugin)
 
 class Train(BasePlugin):
     def generate_image(self, settings, device_config):
