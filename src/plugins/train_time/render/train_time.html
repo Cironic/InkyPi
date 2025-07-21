@@ -48,7 +48,7 @@
   </body>
 </html-->
 
-<!DOCTYPE html>
+<!-- DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
@@ -137,5 +137,144 @@
       {% endfor %}
     </tbody>
   </table>
+</body>
+</html -->
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 10px;
+            background-color: #f7f7f7;
+            color: #222;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 2px solid #999;
+            padding-bottom: 5px;
+        }
+
+        .header h2 {
+            margin: 0;
+        }
+
+        .timestamp {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 6px 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #eaeaea;
+        }
+
+        .weather {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            border-top: 2px solid #999;
+            padding-top: 10px;
+        }
+
+        .weather-icon {
+            height: 50px;
+            margin-right: 15px;
+        }
+
+        .weather-temp {
+            font-size: 1.8em;
+            margin-right: 20px;
+        }
+
+        .data-points {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .data-point {
+            background: #ffffff;
+            border: 1px solid #ccc;
+            padding: 5px;
+            text-align: center;
+            border-radius: 6px;
+        }
+
+        .data-point img {
+            height: 20px;
+            display: block;
+            margin: 0 auto 5px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .measurement {
+            font-size: 1.1em;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Abfahrten</h2>
+        <div class="timestamp">Stand: {{ last_refresh_time }}</div>
+    </div>
+
+    <table>
+        <tr>
+            <th>Zug</th>
+            <th>Planmäßig</th>
+            <th>Abfahrt</th>
+            <th>Gleis</th>
+            <th>Ziel</th>
+            <th>Verspätung</th>
+        </tr>
+        {% for dep in departures %}
+        <tr>
+            <td>{{ dep.zug }}</td>
+            <td>{{ dep.abfahrt_plan }}</td>
+            <td>{{ dep.abfahrt }}</td>
+            <td>{{ dep.gleis }}</td>
+            <td>{{ dep.ziel }}</td>
+            <td>{% if dep.verspaetung > 0 %}+{{ dep.verspaetung }} min{% else %}pünktlich{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="weather">
+        <img class="weather-icon" src="{{ current_day_icon }}" alt="Wetter">
+        <div class="weather-temp">{{ current_temperature }}{{ temperature_unit }}</div>
+    </div>
+
+    <div class="data-points">
+        {% for dp in data_points %}
+        <div class="data-point">
+            <img src="{{ dp.icon }}" alt="{{ dp.label }}">
+            <div class="label">{{ dp.label }}</div>
+            <div class="measurement">{{ dp.measurement }} {{ dp.unit }}</div>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>
