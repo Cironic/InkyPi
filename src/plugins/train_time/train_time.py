@@ -10,11 +10,14 @@ logger = logging.getLogger(__name__)
 
 VVO_URL='https://webapi.vvo-online.de/dm'
 
-weather_plugin = Weather(BasePlugin)
-
 class Train(BasePlugin):
     def generate_image(self, settings, device_config):
         
+        dimensions = device_config.get_resolution()
+        if device_config.get_config("orientation") == "vertical":
+            dimensions = dimensions[::-1]
+        weather_plugin = Weather(config=device_config)
+
         try:
             departures = self.get_departures()
             weather_json, aqi_json, location_json, tz, units, time_format = self.get_weather_components(settings, device_config)
@@ -31,9 +34,7 @@ class Train(BasePlugin):
             logger.exception("Fehler beim Laden der Wetter- oder VVO-Daten")
             raise RuntimeError("VVO API request failure, please check logs.")
 
-        dimensions = device_config.get_resolution()
-        if device_config.get_config("orientation") == "vertical":
-            dimensions = dimensions[::-1]
+
 
         image = self.render_image(
             dimensions,
