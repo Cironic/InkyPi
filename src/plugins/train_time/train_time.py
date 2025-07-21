@@ -54,6 +54,7 @@ class Train(BasePlugin):
         return image
     
     def get_weather_components(self, settings, device_config):
+        weather_plugin = Weather(device_config)
         lat = "51.08500382549591"
         lon = "13.71067464351654"
         timezone = pytz.timezone(device_config.get_config("timezone", default="Europe/Berlin"))
