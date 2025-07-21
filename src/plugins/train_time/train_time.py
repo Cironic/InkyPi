@@ -28,6 +28,7 @@ class Train(BasePlugin):
             )
         except Exception as e:
             logger.error(f"Failed to request VVO API: {str(e)}")
+            logger.exception("Fehler beim Laden der Wetter- oder VVO-Daten")
             raise RuntimeError("VVO API request failure, please check logs.")
 
         dimensions = device_config.get_resolution()
@@ -52,7 +53,6 @@ class Train(BasePlugin):
         return image
     
     def get_weather_components(self, settings, device_config):
-        weather_plugin.get_location("")
         lat = "51.08500382549591"
         lon = "13.71067464351654"
         timezone = pytz.timezone(device_config.get_config("timezone", default="Europe/Berlin"))
