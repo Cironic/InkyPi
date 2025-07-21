@@ -51,7 +51,7 @@ class Train(BasePlugin):
             raise RuntimeError("Failed to take screenshot, please check logs.")
         return image
     
-    def get_weather_components(settings, device_config):
+    def get_weather_components(self, settings, device_config):
         weather_plugin.get_location("")
         lat = "51.08500382549591"
         lon = "13.71067464351654"
