@@ -53,22 +53,6 @@ class Train(BasePlugin):
             raise RuntimeError("Failed to take screenshot, please check logs.")
         return image
     
-    def get_weather_components(self, settings, device_config):
-        weather_plugin = Weather(device_config)
-        lat = "51.08500382549591"
-        lon = "13.71067464351654"
-        timezone = pytz.timezone(device_config.get_config("timezone", default="Europe/Berlin"))
-        units = "metric"
-        time_format = "24h"
-        api_key = device_config.load_env_key("OPEN_WEATHER_MAP_SECRET")
-
-        weather_json = weather_plugin.get_weather_data(api_key, units, lat, lon)
-        aqi_json = weather_plugin.get_air_quality(api_key, lat, lon)
-        location_json = weather_plugin.get_location(api_key, lat, lon)
-
-        return weather_json, aqi_json, location_json, timezone, units, time_format
-
-
     @staticmethod
     def parse_date(date_str):
         timestamp = int(re.search(r'\d+', date_str).group(0)) / 1000

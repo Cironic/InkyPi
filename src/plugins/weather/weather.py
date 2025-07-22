@@ -335,8 +335,7 @@ class Weather(BasePlugin):
             delay = int((real - scheduled).total_seconds() / 60)
 
             departures.append({
-                'zug': dep['LineName'],
-                'plan': scheduled.strftime('%H:%M'),  # NEU
+                'plan': scheduled.strftime('%H:%M'),
                 'abfahrt': real.strftime('%H:%M'),
                 'gleis': dep['Platform']['Name'],
                 'ziel': dep['Direction'],
