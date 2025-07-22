@@ -7,6 +7,8 @@ from datetime import datetime, timezone
 import pytz
 from io import BytesIO
 import math
+import re 
+
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +31,8 @@ UNITS = {
 WEATHER_URL = "https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={long}&units={units}&exclude=minutely&appid={api_key}"
 AIR_QUALITY_URL = "http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={long}&appid={api_key}"
 GEOCODING_URL = "http://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={long}&limit=1&appid={api_key}"
+
+VVO_URL='https://webapi.vvo-online.de/dm'
 
 class Weather(BasePlugin):
     def generate_settings_template(self):
@@ -60,6 +64,7 @@ class Weather(BasePlugin):
             weather_data = self.get_weather_data(api_key, units, lat, long)
             aqi_data = self.get_air_quality(api_key, lat, long)
             location_data = self.get_location(api_key, lat, long)
+            departures = self.get_departures()
         except Exception as e:
             logger.error(f"Failed to make OpenWeatherMap request: {str(e)}")
             raise RuntimeError("OpenWeatherMap request failure, please check logs.")
@@ -81,6 +86,7 @@ class Weather(BasePlugin):
         else:
             last_refresh_time = now.strftime("%Y-%m-%d %I:%M %p")
         template_params["last_refresh_time"] = last_refresh_time
+        template_params["departures"] = departures[:2]
 
         image = self.render_image(dimensions, "weather.html", "weather.css", template_params)
 
@@ -308,3 +314,33 @@ class Weather(BasePlugin):
                 return dt.strftime("%-I:%M %p")
             else:
                 return dt.strftime("%-I:%M")
+
+    @staticmethod
+    def parse_date(date_str):
+        timestamp = int(re.search(r'\d+', date_str).group(0)) / 1000
+        return datetime.fromtimestamp(timestamp)
+    
+    def get_departures(self):
+        VVO_URL='https://webapi.vvo-online.de/dm'
+        stopId=33000622
+        time=datetime.now().isoformat()
+        response = requests.post(VVO_URL,json={'stopId':stopId, 'time':time, "Mot":"SuburbanRailway"})
+        return self.parse_departures(response.json())
+    
+    def parse_departures(self, response):
+        departures = []
+        for dep in response['Departures']:
+            scheduled = self.parse_date(dep['ScheduledTime'])
+            real = self.parse_date(dep['RealTime'])
+            delay = int((real - scheduled).total_seconds() / 60)
+
+            departures.append({
+                'zug': dep['LineName'],
+                'plan': scheduled.strftime('%H:%M'),  # NEU
+                'abfahrt': real.strftime('%H:%M'),
+                'gleis': dep['Platform']['Name'],
+                'ziel': dep['Direction'],
+                'verspaetung': delay
+            })
+            departures.sort(key=lambda x: datetime.strptime(x['abfahrt'], '%H:%M'))
+        return departures

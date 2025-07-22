@@ -1,5 +1,5 @@
 from plugins.base_plugin.base_plugin import BasePlugin
-from plugins.weather.weather import Weather
+from plugins.weather.weather import *
 from datetime import datetime
 import pytz
 import requests

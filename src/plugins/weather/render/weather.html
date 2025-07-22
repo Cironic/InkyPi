@@ -49,8 +49,33 @@
   </div>
   {% endif %}
 
+  <div>
+    <table>
+      <tr>
+          <th>Zug</th>
+          <th>Planmäßig</th>
+          <th>Abfahrt</th>
+          <th>Gleis</th>
+          <th>Ziel</th>
+          <th>Verspätung</th>
+      </tr>
+      {% for dep in departures %}
+      <tr>
+          <td>{{ dep.zug }}</td>
+          <td>{{ dep.abfahrt_plan }}</td>
+          <td>{{ dep.abfahrt }}</td>
+          <td>{{ dep.gleis }}</td>
+          <td>{{ dep.ziel }}</td>
+          <td>{% if dep.verspaetung > 0 %}+{{ dep.verspaetung }} min{% else %}pünktlich{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+
+
   <!-- Forecast Row -->
-  {% if plugin_settings.displayForecast and plugin_settings.displayForecast == "true" %}
+  <!--<{% if plugin_settings.displayForecast and plugin_settings.displayForecast == "true" %}
   <div class="forecast">
     {% for day in forecast[:plugin_settings.forecastDays | int] %}
       <div class="forecast-day">
@@ -71,7 +96,7 @@
     {% endfor %}
   </div>
   {% endif %}
-</div>
+</div>-->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
