@@ -8,6 +8,8 @@ from astral import moon
 import pytz
 from io import BytesIO
 import math
+import re 
+
 
 logger = logging.getLogger(__name__)
         
@@ -58,6 +60,7 @@ OPEN_METEO_UNIT_PARAMS = {
 }
 
 class Weather(BasePlugin):
+    
     def generate_settings_template(self):
         template_params = super().generate_settings_template()
         template_params['api_key'] = {
@@ -69,6 +72,7 @@ class Weather(BasePlugin):
         return template_params
 
     def generate_image(self, settings, device_config):
+        vvo = VvoDepartures()
         lat = settings.get('latitude')
         long = settings.get('longitude')
         if not lat or not long:
@@ -133,6 +137,35 @@ class Weather(BasePlugin):
         if not image:
             raise RuntimeError("Failed to take screenshot, please check logs.")
         return image
+    
+    @staticmethod
+    def parse_date(date_str):
+        timestamp = int(re.search(r'\d+', date_str).group(0)) / 1000
+        return datetime.fromtimestamp(timestamp)
+    
+    def get_departures(self):
+        VVO_URL='https://webapi.vvo-online.de/dm'
+        stopId=33000622
+        time=datetime.now().isoformat()
+        response = requests.post(VVO_URL,json={'stopId':stopId, 'limit':3, 'time':time, "Mot":"SuburbanRailway"})
+        parsed_departures = self.parse_departures(response.json())
+        return parsed_departures
+    
+    def parse_departures(self, response):
+        departures = []
+        for dep in response['Departures']:
+            scheduled = self.parse_date(dep['ScheduledTime'])
+            real = self.parse_date(dep['RealTime'])
+            delay = int((real - scheduled).total_seconds() / 60)
+
+            departures.append({
+                'zug': dep['LineName'],
+                'abfahrt': real.strftime('%H:%M'),
+                'gleis': dep['Platform']['Name'],
+                'ziel': dep['Direction'],
+                'verspaetung': delay
+            })
+        return departures
 
     def parse_weather_data(self, weather_data, aqi_data, tz, units, time_format):
         current = weather_data.get("current")

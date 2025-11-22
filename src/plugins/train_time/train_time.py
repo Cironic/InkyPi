@@ -25,7 +25,7 @@ class VvoDepartures():
         VVO_URL='https://webapi.vvo-online.de/dm'
         stopId=33000622
         time=datetime.now().isoformat()
-        response = requests.post(VVO_URL,json={'stopId':stopId, 'time':time, "Mot":"SuburbanRailway"})
+        response = requests.post(VVO_URL,json={'stopId':stopId, 'limit':3, 'time':time, "Mot":"SuburbanRailway"})
         parsed_departures = self.parse_departures(response.json())
         return parsed_departures
     
