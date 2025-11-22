@@ -72,7 +72,7 @@ class Weather(BasePlugin):
         return template_params
 
     def generate_image(self, settings, device_config):
-        vvo = VvoDepartures()
+
         lat = settings.get('latitude')
         long = settings.get('longitude')
         if not lat or not long:
