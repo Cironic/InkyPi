@@ -1,0 +1,62 @@
+{
+    "name": "InkyPi",
+    "orientation": "horizontal",
+    "inverted_image": false,
+    "scheduler_sleep_time": 60,
+    "startup": false,
+    "resolution": [
+        800,
+        480
+    ],
+    "playlist_config": {
+        "playlists": [
+            {
+                "name": "Default",
+                "start_time": "00:00",
+                "end_time": "24:00",
+                "plugins": [
+                    {
+                        "plugin_id": "weather",
+                        "name": "weatherandtrain",
+                        "plugin_settings": {
+                            "latitude": "51.08500888011903",
+                            "longitude": "13.710620999336243",
+                            "weatherProvider": "OpenWeatherMap",
+                            "units": "metric",
+                            "titleSelection": "location",
+                            "customTitle": "",
+                            "displayRefreshTime": "true",
+                            "displayMetrics": "true",
+                            "displayGraph": "true",
+                            "displayForecast": "true",
+                            "forecastDays": "7",
+                            "weatherTimeZone": "locationTimeZone",
+                            "selectedFrame": "None",
+                            "topMargin": "",
+                            "bottomMargin": "",
+                            "leftMargin": "",
+                            "rightMargin": "",
+                            "backgroundOption": "color",
+                            "backgroundColor": "#ffffff",
+                            "textColor": "#000000"
+                        },
+                        "refresh": {
+                            "interval": 600
+                        },
+                        "latest_refresh_time": "2025-11-22T21:48:10.494600+00:00"
+                    }
+                ],
+                "current_plugin_index": null
+            }
+        ],
+        "active_playlist": null
+    },
+    "refresh_info": {
+        "refresh_time": "2025-11-22T21:48:10.494600+00:00",
+        "image_hash": "520fe8c7bfcb0a09ab590474dcb093d2f5ce776562d3805c5948c4352dc7ecff",
+        "refresh_type": "Playlist",
+        "plugin_id": "weather",
+        "playlist": "Default",
+        "plugin_instance": "weatherandtrain"
+    }
+}
