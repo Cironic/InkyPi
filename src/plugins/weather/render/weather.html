@@ -6,9 +6,14 @@
   <div class="last-refresh">Last refresh: {{ last_refresh_time }}</div>
   {% endif %}
   <!-- Current Date -->
-  <div class="header">
+  <!-- div class="header">
     <div class="title">{{ title }}</div>
     <div class="current-date">{{ current_date }}</div>
+  </div-->
+
+  <div class="header header-inline">
+    <span class="title small-location">{{ title }}</span>
+    <span class="current-date">{{ current_date }}</span>
   </div>
 
   <div class="today-container">
@@ -88,7 +93,7 @@
         {% endif %}
       </div>
     {% endfor %} -->
-    <table>
+    <table class="departures-table">
       <thead>
         <tr>
           <th>Zug</th>
