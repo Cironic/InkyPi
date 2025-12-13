@@ -42,21 +42,6 @@
   table-layout: fixed;
 }
 
-.departures-table th,
-.departures-table td {
-  padding: 4px 6px;
-  text-align: left;
-}
-
-.departures-table th {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
-  font-weight: 600;
-}
-
-.departures-table td {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-}
-
 .last-refresh {
   position: absolute;
   top: 0.5dvh;
