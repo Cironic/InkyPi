@@ -35,12 +35,12 @@
   font-size: 0.8em;
   opacity: 0.8;
 }
-
+/*
 .departures-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-}
+}*/
 
 .last-refresh {
   position: absolute;
