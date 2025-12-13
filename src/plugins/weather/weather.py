@@ -132,6 +132,14 @@ class Weather(BasePlugin):
             last_refresh_time = now.strftime("%Y-%m-%d %I:%M %p")
         template_params["last_refresh_time"] = last_refresh_time
 
+        try:
+            departures = self.get_departures()
+        except Exception as e:
+            logger.error(f"Failed to load departures: {e}")
+            departures = []
+
+        template_params["departures"] = departures
+
         image = self.render_image(dimensions, "weather.html", "weather.css", template_params)
 
         if not image:
